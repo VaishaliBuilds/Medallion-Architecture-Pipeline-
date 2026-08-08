@@ -1,127 +1,77 @@
-# Snowflake Production Incremental ETL Pipeline
+# Snowflake Medallion Architecture – End-to-End Data Pipeline
 
-## Project Overview
+## 📌 Project Overview
 
-This project demonstrates a real-world incremental ETL pipeline built entirely in Snowflake using Medallion Architecture.
+This project demonstrates an end-to-end **Medallion Architecture data pipeline using Snowflake**.
 
-The pipeline automatically loads CSV files into the Bronze layer, captures incremental changes using Snowflake Streams, processes data through a Stored Procedure with MERGE logic, and maintains a clean Silver layer. Audit logging and task automation are included to simulate a production environment.
+The pipeline processes employee data from a CSV file and moves it through the following layers:
 
----
+**CSV → Internal Stage → Bronze → Stream → Task → Stored Procedure → MERGE → Silver → Gold**
 
-## Architecture
+The project uses Snowflake features such as:
 
-CSV
-│
-▼
-SnowSQL (PUT)
-│
-▼
-Internal Stage
-│
-▼
-COPY INTO
-│
-▼
-BRONZE (Raw)
-│
-▼
-STREAM
-│
-▼
-Stored Procedure
-│
-▼
-MERGE
-│
-▼
-SILVER (Clean)
-│
-▼
-TASK Automation
-│
-▼
-GOLD (Reporting)
-
----
-
-## Technologies
-
-- Snowflake
-- SnowSQL CLI
-- SQL
+- Internal Stage
+- COPY INTO
+- Bronze / Silver / Gold architecture
 - Streams
 - Tasks
 - Stored Procedures
 - MERGE
-- Internal Stage
-- COPY INTO
-
----
-
-## Features
-
-- Incremental Data Loading
-- Medallion Architecture
-- Stream-based CDC
-- Automatic MERGE
+- Temporary Tables
 - Audit Logging
-- Error Handling
-- SnowSQL File Upload
-- Automated Pipeline using Tasks
+- Views
+- Analytical transformations
 
 ---
 
-## Project Structure
+## 🏗️ Architecture
 
-01_Database
-
-02_File_Format
-
-03_Stage
-
-04_Bronze
-
-05_Stream
-
-06_Silver
-
-07_Procedure
-
-08_Task
-
-09_Audit
-
-10_Gold
-
-11_Testing
-
----
-
-## Pipeline Flow
-
-1. Upload CSV using SnowSQL
-2. Store file in Internal Stage
-3. Load into Bronze using COPY INTO
-4. Stream captures changes
-5. Stored Procedure processes incremental data
-6. MERGE updates Silver
-7. Task automates execution
-8. Audit logs execution details
-
----
-
-## Future Improvements
-
-- SCD Type 2
-- Notification Integration
-- Email Alerts
-- Dynamic Tables
-- Snowpipe
-- External Stage
-- Power BI Dashboard
-
----
-
-## Author
-
-Vaishali Ganotra
+```text
+                    Employee CSV
+                         │
+                         ▼
+                  Snowflake Stage
+                         │
+                         ▼
+                     COPY INTO
+                         │
+                         ▼
+                ┌─────────────────┐
+                │  BRONZE LAYER   │
+                │ Raw Employee Data│
+                └─────────────────┘
+                         │
+                         ▼
+                     STREAM
+                         │
+                         ▼
+                      TASK
+                         │
+                         ▼
+              Stored Procedure
+                         │
+                         ▼
+                  Incremental Data
+                         │
+                         ▼
+                      MERGE
+                         │
+                         ▼
+                ┌─────────────────┐
+                │  SILVER LAYER   │
+                │ Clean Employee  │
+                │      Data       │
+                └─────────────────┘
+                         │
+                         ▼
+                 Business Logic
+                         │
+                         ▼
+                ┌─────────────────┐
+                │   GOLD LAYER    │
+                │ Reporting /     │
+                │ Analytics       │
+                └─────────────────┘
+                         │
+                         ▼
+                  BI / Reporting
